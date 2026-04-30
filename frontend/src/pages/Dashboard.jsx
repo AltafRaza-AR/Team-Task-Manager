@@ -163,8 +163,10 @@ const Dashboard = () => {
         .stat-card__label {
           display: block;
           font-size: 13px;
-          opacity: 0.9;
+          opacity: 1;
           margin-bottom: 8px;
+          color: rgba(255, 255, 255, 0.95);
+          font-weight: 500;
         }
         .stat-card strong {
           display: block;
