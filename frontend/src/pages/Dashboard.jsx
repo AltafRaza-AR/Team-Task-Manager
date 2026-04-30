@@ -10,6 +10,8 @@ const Dashboard = () => {
   const [membersCount, setMembersCount] = useState(0);
   const [members, setMembers] = useState([]);
   const [showMembersModal, setShowMembersModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [memberToDelete, setMemberToDelete] = useState(null);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [showLogoutModal, setShowLogoutModal] = useState(false);
@@ -45,6 +47,38 @@ const Dashboard = () => {
 
   const closeMembersModal = () => {
     setShowMembersModal(false);
+  };
+
+  const handleDeleteMember = (member) => {
+    setMemberToDelete(member);
+    setShowDeleteModal(true);
+  };
+
+  const confirmDeleteMember = async () => {
+    try {
+      await axios.delete(
+        `${API_BASE_URL}/api/auth/users/${memberToDelete._id}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      );
+      // Refresh members list after deletion
+      const res = await axios.get(`${API_BASE_URL}/api/auth/users`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setMembers(res.data);
+      setMembersCount(res.data.length);
+      setShowDeleteModal(false);
+      setMemberToDelete(null);
+    } catch (err) {
+      console.error("Error deleting member", err);
+      alert(err.response?.data?.message || "Error deleting member");
+    }
+  };
+
+  const cancelDeleteMember = () => {
+    setShowDeleteModal(false);
+    setMemberToDelete(null);
   };
 
   // Load projects and members count as soon as the page opens
@@ -521,6 +555,85 @@ const Dashboard = () => {
           font-size: 12px;
           font-weight: 600;
         }
+        .member-delete-btn {
+          margin-left: 12px;
+          padding: 6px 12px;
+          background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+          color: white;
+          border: none;
+          border-radius: 6px;
+          font-size: 12px;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.3s ease;
+        }
+        .member-delete-btn:hover {
+          transform: scale(1.05);
+          box-shadow: 0 6px 15px rgba(245, 87, 108, 0.3);
+        }
+        .delete-member-modal {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: rgba(0, 0, 0, 0.5);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: 1001;
+          animation: fadeIn 0.3s ease;
+        }
+        .delete-member-modal-content {
+          background: white;
+          border-radius: 16px;
+          padding: 40px;
+          max-width: 400px;
+          text-align: center;
+          box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+          animation: slideUp 0.3s ease;
+        }
+        .delete-member-modal-content h3 {
+          font-size: 24px;
+          color: #1a202c;
+          margin: 0 0 12px 0;
+        }
+        .delete-member-modal-content p {
+          color: #718096;
+          margin: 0 0 32px 0;
+          font-size: 15px;
+          line-height: 1.5;
+        }
+        .delete-member-modal-buttons {
+          display: flex;
+          gap: 12px;
+          justify-content: center;
+        }
+        .delete-member-btn {
+          padding: 12px 28px;
+          border: none;
+          border-radius: 8px;
+          font-weight: 600;
+          cursor: pointer;
+          font-size: 14px;
+          transition: all 0.3s ease;
+        }
+        .delete-member-btn-confirm {
+          background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+          color: white;
+        }
+        .delete-member-btn-confirm:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 8px 20px rgba(245, 87, 108, 0.3);
+        }
+        .delete-member-btn-cancel {
+          background: #e2e8f0;
+          color: #1a202c;
+        }
+        .delete-member-btn-cancel:hover {
+          background: #cbd5e0;
+          transform: translateY(-2px);
+        }
       `}</style>
 
       <div className="dashboard-header">
@@ -691,11 +804,52 @@ const Dashboard = () => {
                     <p className="member-name">{member.name}</p>
                     <p className="member-email">{member.email}</p>
                   </div>
-                  <span className="member-role">
-                    {member.role === "Admin" ? "👑 Admin" : "👤 Member"}
-                  </span>
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "8px",
+                    }}
+                  >
+                    <span className="member-role">
+                      {member.role === "Admin" ? "👑 Admin" : "👤 Member"}
+                    </span>
+                    <button
+                      className="member-delete-btn"
+                      onClick={() => handleDeleteMember(member)}
+                    >
+                      Delete
+                    </button>
+                  </div>
                 </div>
               ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showDeleteModal && memberToDelete && (
+        <div className="delete-member-modal">
+          <div className="delete-member-modal-content">
+            <h3>Delete Member?</h3>
+            <p>
+              Are you sure you want to delete{" "}
+              <strong>{memberToDelete.name}</strong>? This action cannot be
+              undone.
+            </p>
+            <div className="delete-member-modal-buttons">
+              <button
+                className="delete-member-btn delete-member-btn-confirm"
+                onClick={confirmDeleteMember}
+              >
+                Yes, Delete
+              </button>
+              <button
+                className="delete-member-btn delete-member-btn-cancel"
+                onClick={cancelDeleteMember}
+              >
+                Cancel
+              </button>
             </div>
           </div>
         </div>

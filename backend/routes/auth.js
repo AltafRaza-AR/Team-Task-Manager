@@ -118,4 +118,30 @@ router.get("/users", authMiddleware, async (req, res) => {
   }
 });
 
+// @route   DELETE /api/auth/users/:id
+// @desc    Delete a user (Admin only)
+router.delete("/users/:id", authMiddleware, async (req, res) => {
+  try {
+    if (req.user.role !== "Admin") {
+      return res.status(403).json({ message: "Only Admins can delete users" });
+    }
+
+    // Prevent admin from deleting themselves
+    if (req.user.userId === req.params.id) {
+      return res
+        .status(400)
+        .json({ message: "You cannot delete your own account" });
+    }
+
+    const deletedUser = await User.findByIdAndDelete(req.params.id);
+    if (!deletedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.json({ message: "User deleted successfully" });
+  } catch (err) {
+    res.status(500).json({ message: "Server error deleting user" });
+  }
+});
+
 module.exports = router;
