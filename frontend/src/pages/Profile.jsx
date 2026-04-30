@@ -509,7 +509,7 @@ const Profile = () => {
               <label>Password</label>
               <div className="password-field-container">
                 <div className="password-field-value">
-                  {showPassword ? "••••••••" : "••••••••"}
+                  {showPassword ? "🔓 Securely encrypted" : "••••••••"}
                 </div>
                 <button
                   className="eye-toggle-btn"
