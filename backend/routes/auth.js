@@ -102,4 +102,20 @@ router.get("/users/count", authMiddleware, async (req, res) => {
   }
 });
 
+// @route   GET /api/auth/users
+// @desc    Get all users list (Admin only)
+router.get("/users", authMiddleware, async (req, res) => {
+  try {
+    if (req.user.role !== "Admin") {
+      return res
+        .status(403)
+        .json({ message: "Only Admins can view users list" });
+    }
+    const users = await User.find().select("name email role");
+    res.json(users);
+  } catch (err) {
+    res.status(500).json({ message: "Server error fetching users list" });
+  }
+});
+
 module.exports = router;

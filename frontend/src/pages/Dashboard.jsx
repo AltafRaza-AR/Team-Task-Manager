@@ -8,6 +8,8 @@ import { API_BASE_URL } from "../config/api";
 const Dashboard = () => {
   const [projects, setProjects] = useState([]);
   const [membersCount, setMembersCount] = useState(0);
+  const [members, setMembers] = useState([]);
+  const [showMembersModal, setShowMembersModal] = useState(false);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [showLogoutModal, setShowLogoutModal] = useState(false);
@@ -27,6 +29,22 @@ const Dashboard = () => {
 
   const cancelLogout = () => {
     setShowLogoutModal(false);
+  };
+
+  const handleShowMembers = async () => {
+    try {
+      const res = await axios.get(`${API_BASE_URL}/api/auth/users`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setMembers(res.data);
+      setShowMembersModal(true);
+    } catch (err) {
+      console.error("Error fetching members", err);
+    }
+  };
+
+  const closeMembersModal = () => {
+    setShowMembersModal(false);
   };
 
   // Load projects and members count as soon as the page opens
@@ -177,6 +195,14 @@ const Dashboard = () => {
           padding: 24px;
           border-radius: 12px;
           color: white;
+        }
+        .stat-card--clickable {
+          cursor: pointer;
+          transition: all 0.3s ease;
+        }
+        .stat-card--clickable:hover {
+          transform: translateY(-4px);
+          box-shadow: 0 12px 30px rgba(102, 126, 234, 0.3);
         }
         .stat-card__label {
           display: block;
@@ -414,6 +440,87 @@ const Dashboard = () => {
           background: #cbd5e0;
           transform: translateY(-2px);
         }
+        .members-modal {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: rgba(0, 0, 0, 0.5);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: 1000;
+          animation: fadeIn 0.3s ease;
+        }
+        .members-modal-content {
+          background: white;
+          border-radius: 16px;
+          padding: 40px;
+          max-width: 500px;
+          max-height: 600px;
+          overflow-y: auto;
+          box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+          animation: slideUp 0.3s ease;
+        }
+        .members-modal-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 24px;
+        }
+        .members-modal-header h3 {
+          font-size: 24px;
+          color: #1a202c;
+          margin: 0;
+        }
+        .members-modal-close {
+          background: none;
+          border: none;
+          font-size: 28px;
+          cursor: pointer;
+          color: #718096;
+          transition: color 0.3s ease;
+        }
+        .members-modal-close:hover {
+          color: #1a202c;
+        }
+        .members-list {
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
+        }
+        .member-item {
+          padding: 16px;
+          background: #f7fafc;
+          border-radius: 8px;
+          border-left: 4px solid #667eea;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+        .member-info {
+          flex: 1;
+        }
+        .member-name {
+          font-weight: 600;
+          color: #1a202c;
+          margin: 0 0 4px 0;
+        }
+        .member-email {
+          font-size: 13px;
+          color: #718096;
+          margin: 0;
+        }
+        .member-role {
+          display: inline-block;
+          padding: 4px 12px;
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          color: white;
+          border-radius: 6px;
+          font-size: 12px;
+          font-weight: 600;
+        }
       `}</style>
 
       <div className="dashboard-header">
@@ -441,7 +548,10 @@ const Dashboard = () => {
               <strong>{isAdmin ? "👑 Admin" : "👤 Member"}</strong>
             </div>
             {isAdmin && (
-              <div className="stat-card">
+              <div
+                className="stat-card stat-card--clickable"
+                onClick={handleShowMembers}
+              >
                 <span className="stat-card__label">Team Members</span>
                 <strong>{membersCount}</strong>
               </div>
@@ -557,6 +667,35 @@ const Dashboard = () => {
               >
                 Cancel
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showMembersModal && (
+        <div className="members-modal">
+          <div className="members-modal-content">
+            <div className="members-modal-header">
+              <h3>Team Members</h3>
+              <button
+                className="members-modal-close"
+                onClick={closeMembersModal}
+              >
+                ×
+              </button>
+            </div>
+            <div className="members-list">
+              {members.map((member) => (
+                <div key={member._id} className="member-item">
+                  <div className="member-info">
+                    <p className="member-name">{member.name}</p>
+                    <p className="member-email">{member.email}</p>
+                  </div>
+                  <span className="member-role">
+                    {member.role === "Admin" ? "👑 Admin" : "👤 Member"}
+                  </span>
+                </div>
+              ))}
             </div>
           </div>
         </div>
