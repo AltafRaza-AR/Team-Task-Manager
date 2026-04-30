@@ -248,9 +248,14 @@ const Dashboard = () => {
         }
         .project-grid {
           display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+          grid-template-columns: repeat(2, 1fr);
           gap: 24px;
           align-items: start;
+        }
+        @media (max-width: 768px) {
+          .project-grid {
+            grid-template-columns: 1fr;
+          }
         }
         .project-card {
           background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
