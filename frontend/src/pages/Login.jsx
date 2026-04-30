@@ -38,65 +38,202 @@ const Login = () => {
   return (
     <div
       style={{
-        maxWidth: "400px",
-        margin: "50px auto",
-        fontFamily: "sans-serif",
+        minHeight: "100vh",
+        background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+        padding: "20px",
       }}
     >
-      <h2>Log In</h2>
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      <style>{`
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(20px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .login-input:focus {
+          box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        .login-btn:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+        .login-btn:active {
+          transform: translateY(0);
+        }
+      `}</style>
 
-      <form
-        onSubmit={handleLogin}
-        style={{ display: "flex", flexDirection: "column", gap: "15px" }}
+      <div
+        style={{
+          background: "white",
+          borderRadius: "16px",
+          boxShadow: "0 20px 60px rgba(0, 0, 0, 0.3)",
+          padding: "48px 40px",
+          maxWidth: "420px",
+          width: "100%",
+          animation: "fadeIn 0.6s ease-out",
+        }}
       >
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-          style={{ padding: "10px", fontSize: "16px" }}
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-          style={{ padding: "10px", fontSize: "16px" }}
-        />
-        <button
-          type="submit"
-          style={{
-            padding: "10px",
-            fontSize: "16px",
-            cursor: "pointer",
-            backgroundColor: "#007bff",
-            color: "white",
-            border: "none",
-          }}
-        >
-          Log In
-        </button>
-      </form>
+        <div style={{ marginBottom: "8px" }}>
+          <h1
+            style={{
+              fontSize: "32px",
+              fontWeight: "700",
+              color: "#1a202c",
+              margin: "0 0 8px 0",
+              letterSpacing: "-0.5px",
+            }}
+          >
+            Welcome Back
+          </h1>
+          <p
+            style={{
+              fontSize: "14px",
+              color: "#718096",
+              margin: "0",
+            }}
+          >
+            Sign in to your account to continue
+          </p>
+        </div>
 
-      <p style={{ textAlign: "center", marginTop: "20px", fontSize: "14px" }}>
-        Don't have an account?{" "}
-        <button
-          onClick={() => navigate("/signup")}
+        {error && (
+          <div
+            style={{
+              background: "#fed7d7",
+              border: "1px solid #fc8181",
+              color: "#c53030",
+              padding: "12px 14px",
+              borderRadius: "8px",
+              fontSize: "14px",
+              marginBottom: "20px",
+            }}
+          >
+            {error}
+          </div>
+        )}
+
+        <form
+          onSubmit={handleLogin}
+          style={{ display: "flex", flexDirection: "column", gap: "16px" }}
+        >
+          <div>
+            <label
+              style={{
+                display: "block",
+                fontSize: "13px",
+                fontWeight: "600",
+                color: "#2d3748",
+                marginBottom: "6px",
+              }}
+            >
+              Email Address
+            </label>
+            <input
+              type="email"
+              placeholder="name@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              className="login-input"
+              style={{
+                width: "100%",
+                padding: "12px 14px",
+                fontSize: "15px",
+                border: "1.5px solid #e2e8f0",
+                borderRadius: "8px",
+                transition: "all 0.3s ease",
+                boxSizing: "border-box",
+              }}
+            />
+          </div>
+
+          <div>
+            <label
+              style={{
+                display: "block",
+                fontSize: "13px",
+                fontWeight: "600",
+                color: "#2d3748",
+                marginBottom: "6px",
+              }}
+            >
+              Password
+            </label>
+            <input
+              type="password"
+              placeholder="••••••••"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              className="login-input"
+              style={{
+                width: "100%",
+                padding: "12px 14px",
+                fontSize: "15px",
+                border: "1.5px solid #e2e8f0",
+                borderRadius: "8px",
+                transition: "all 0.3s ease",
+                boxSizing: "border-box",
+              }}
+            />
+          </div>
+
+          <button
+            type="submit"
+            className="login-btn"
+            style={{
+              padding: "12px 16px",
+              fontSize: "16px",
+              fontWeight: "600",
+              cursor: "pointer",
+              backgroundColor:
+                "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+              background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+              color: "white",
+              border: "none",
+              borderRadius: "8px",
+              transition: "all 0.3s ease",
+              marginTop: "4px",
+            }}
+          >
+            Sign In
+          </button>
+        </form>
+
+        <div
           style={{
-            background: "none",
-            border: "none",
-            color: "#007bff",
-            cursor: "pointer",
-            textDecoration: "underline",
-            fontSize: "14px",
+            marginTop: "24px",
+            paddingTop: "24px",
+            borderTop: "1px solid #e2e8f0",
+            textAlign: "center",
           }}
         >
-          Sign Up
-        </button>
-      </p>
+          <p
+            style={{ fontSize: "14px", color: "#4a5568", margin: "0 0 8px 0" }}
+          >
+            Don't have an account?
+          </p>
+          <button
+            onClick={() => navigate("/signup")}
+            style={{
+              background: "none",
+              border: "none",
+              color: "#667eea",
+              cursor: "pointer",
+              fontSize: "15px",
+              fontWeight: "600",
+              textDecoration: "none",
+              transition: "color 0.3s ease",
+            }}
+            onMouseEnter={(e) => (e.target.style.color = "#764ba2")}
+            onMouseLeave={(e) => (e.target.style.color = "#667eea")}
+          >
+            Create an account
+          </button>
+        </div>
+      </div>
     </div>
   );
 };
