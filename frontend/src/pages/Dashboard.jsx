@@ -7,6 +7,7 @@ import { API_BASE_URL } from "../config/api";
 
 const Dashboard = () => {
   const [projects, setProjects] = useState([]);
+  const [membersCount, setMembersCount] = useState(0);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [showLogoutModal, setShowLogoutModal] = useState(false);
@@ -28,20 +29,25 @@ const Dashboard = () => {
     setShowLogoutModal(false);
   };
 
-  // Load projects as soon as the page opens
+  // Load projects and members count as soon as the page opens
   useEffect(() => {
-    const loadProjects = async () => {
+    const loadData = async () => {
       try {
-        const res = await axios.get(`${API_BASE_URL}/api/projects`, {
+        const projectsRes = await axios.get(`${API_BASE_URL}/api/projects`, {
           headers: { Authorization: `Bearer ${token}` },
         });
-        setProjects(res.data);
+        setProjects(projectsRes.data);
+
+        const membersRes = await axios.get(
+          `${API_BASE_URL}/api/auth/users/count`,
+        );
+        setMembersCount(membersRes.data.count);
       } catch (err) {
-        console.error("Error fetching projects", err);
+        console.error("Error fetching data", err);
       }
     };
 
-    loadProjects();
+    loadData();
   }, [token]);
 
   const fetchProjects = async () => {
@@ -430,6 +436,10 @@ const Dashboard = () => {
             <div className="stat-card">
               <span className="stat-card__label">Your Role</span>
               <strong>{isAdmin ? "👑 Admin" : "👤 Member"}</strong>
+            </div>
+            <div className="stat-card">
+              <span className="stat-card__label">Team Members</span>
+              <strong>{membersCount}</strong>
             </div>
           </div>
         </div>

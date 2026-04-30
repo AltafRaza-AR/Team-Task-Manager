@@ -34,17 +34,15 @@ router.post("/signup", async (req, res) => {
       { expiresIn: "1d" },
     );
 
-    res
-      .status(201)
-      .json({
-        token,
-        user: {
-          id: user._id,
-          name: user.name,
-          email: user.email,
-          role: user.role,
-        },
-      });
+    res.status(201).json({
+      token,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
+    });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Server error during signup" });
@@ -84,6 +82,17 @@ router.post("/login", async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Server error during login" });
+  }
+});
+
+// @route   GET /api/auth/users
+// @desc    Get all users count
+router.get("/users/count", async (req, res) => {
+  try {
+    const usersCount = await User.countDocuments();
+    res.json({ count: usersCount });
+  } catch (err) {
+    res.status(500).json({ message: "Server error fetching users count" });
   }
 });
 
