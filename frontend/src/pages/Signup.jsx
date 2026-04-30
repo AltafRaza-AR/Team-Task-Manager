@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { API_BASE_URL } from "../config/api";
@@ -9,7 +9,28 @@ const Signup = () => {
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("Member");
   const [error, setError] = useState("");
+  const [adminExists, setAdminExists] = useState(false);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+
+  // Check if admin already exists
+  useEffect(() => {
+    const checkAdminExists = async () => {
+      try {
+        const res = await axios.get(`${API_BASE_URL}/api/auth/admin-exists`);
+        setAdminExists(res.data.adminExists);
+        // If admin exists, force role to Member
+        if (res.data.adminExists) {
+          setRole("Member");
+        }
+      } catch (err) {
+        console.error("Error checking admin status:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    checkAdminExists();
+  }, []);
 
   const handleSignup = async (e) => {
     e.preventDefault();
@@ -221,6 +242,7 @@ const Signup = () => {
             <select
               value={role}
               onChange={(e) => setRole(e.target.value)}
+              disabled={adminExists}
               className="signup-select"
               style={{
                 width: "100%",
@@ -231,12 +253,27 @@ const Signup = () => {
                 transition: "all 0.3s ease",
                 boxSizing: "border-box",
                 backgroundColor: "white",
-                cursor: "pointer",
+                cursor: adminExists ? "not-allowed" : "pointer",
+                opacity: adminExists ? 0.6 : 1,
               }}
             >
               <option value="Member">Member</option>
-              <option value="Admin">Admin</option>
+              <option value="Admin" disabled={adminExists}>
+                Admin
+              </option>
             </select>
+            {adminExists && (
+              <p
+                style={{
+                  fontSize: "12px",
+                  color: "#f6ad55",
+                  marginTop: "6px",
+                  fontWeight: "500",
+                }}
+              >
+                ⓘ Admin account already exists. New signups are Members only.
+              </p>
+            )}
           </div>
 
           <button

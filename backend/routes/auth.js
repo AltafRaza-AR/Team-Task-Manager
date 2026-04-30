@@ -14,21 +14,34 @@ router.post("/signup", async (req, res) => {
     let user = await User.findOne({ email });
     if (user) return res.status(400).json({ message: "User already exists" });
 
-    // 2. Hash the password
+    // 2. Check if admin already exists - enforce single admin policy
+    const adminExists = await User.findOne({ role: "Admin" });
+    let assignedRole = role || "Member";
+    if (adminExists && assignedRole === "Admin") {
+      return res
+        .status(400)
+        .json({ message: "Admin already exists. Only members can sign up." });
+    }
+    // If admin exists, force new user to be Member
+    if (adminExists) {
+      assignedRole = "Member";
+    }
+
+    // 3. Hash the password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    // 3. Create the new user
+    // 4. Create the new user
     user = new User({
       name,
       email,
       password: hashedPassword,
-      role: role || "Member", // Default to Member if not provided
+      role: assignedRole,
     });
 
     await user.save();
 
-    // 4. Generate JWT Token
+    // 5. Generate JWT Token
     const token = jwt.sign(
       { userId: user._id, role: user.role },
       process.env.JWT_SECRET,
@@ -149,6 +162,18 @@ router.delete("/users/:id", authMiddleware, async (req, res) => {
     res.json({ message: "User deleted successfully" });
   } catch (err) {
     res.status(500).json({ message: "Server error deleting user" });
+  }
+});
+
+// @route   GET /api/auth/admin-exists
+// @desc    Check if an admin user exists (public endpoint)
+router.get("/admin-exists", async (req, res) => {
+  try {
+    const adminExists = await User.findOne({ role: "Admin" });
+    res.json({ adminExists: !!adminExists });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error checking admin" });
   }
 });
 
