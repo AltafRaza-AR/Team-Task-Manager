@@ -80,6 +80,23 @@ const Login = () => {
           Log In
         </button>
       </form>
+
+      <p style={{ textAlign: "center", marginTop: "20px", fontSize: "14px" }}>
+        Don't have an account?{" "}
+        <button
+          onClick={() => navigate("/signup")}
+          style={{
+            background: "none",
+            border: "none",
+            color: "#007bff",
+            cursor: "pointer",
+            textDecoration: "underline",
+            fontSize: "14px",
+          }}
+        >
+          Sign Up
+        </button>
+      </p>
     </div>
   );
 };
