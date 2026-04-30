@@ -250,6 +250,7 @@ const Dashboard = () => {
           display: grid;
           grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
           gap: 24px;
+          align-items: start;
         }
         .project-card {
           background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
