@@ -133,11 +133,19 @@ router.delete("/users/:id", authMiddleware, async (req, res) => {
         .json({ message: "You cannot delete your own account" });
     }
 
-    const deletedUser = await User.findByIdAndDelete(req.params.id);
-    if (!deletedUser) {
+    // Prevent deletion of admin users
+    const userToDelete = await User.findById(req.params.id);
+    if (!userToDelete) {
       return res.status(404).json({ message: "User not found" });
     }
 
+    if (userToDelete.role === "Admin") {
+      return res
+        .status(403)
+        .json({ message: "Cannot delete other admin accounts" });
+    }
+
+    await User.findByIdAndDelete(req.params.id);
     res.json({ message: "User deleted successfully" });
   } catch (err) {
     res.status(500).json({ message: "Server error deleting user" });

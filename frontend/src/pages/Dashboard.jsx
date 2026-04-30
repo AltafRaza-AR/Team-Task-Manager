@@ -567,9 +567,14 @@ const Dashboard = () => {
           cursor: pointer;
           transition: all 0.3s ease;
         }
-        .member-delete-btn:hover {
+        .member-delete-btn:hover:not(:disabled) {
           transform: scale(1.05);
           box-shadow: 0 6px 15px rgba(245, 87, 108, 0.3);
+        }
+        .member-delete-btn:disabled {
+          background: #cbd5e0;
+          cursor: not-allowed;
+          opacity: 0.6;
         }
         .delete-member-modal {
           position: fixed;
@@ -817,6 +822,12 @@ const Dashboard = () => {
                     <button
                       className="member-delete-btn"
                       onClick={() => handleDeleteMember(member)}
+                      disabled={member.role === "Admin"}
+                      title={
+                        member.role === "Admin"
+                          ? "Cannot delete admin accounts"
+                          : "Delete member"
+                      }
                     >
                       Delete
                     </button>
