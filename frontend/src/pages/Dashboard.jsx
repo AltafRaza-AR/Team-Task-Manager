@@ -14,9 +14,11 @@ const Dashboard = () => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("userRole");
-    navigate("/login");
+    if (window.confirm("Are you sure you want to logout?")) {
+      localStorage.removeItem("token");
+      localStorage.removeItem("userRole");
+      navigate("/login");
+    }
   };
 
   // Load projects as soon as the page opens
