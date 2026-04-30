@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { getUserRoleFromToken } from "../utils/auth";
+import { API_BASE_URL } from "../config/api";
 
 const TaskBoard = ({ projectId }) => {
   const [tasks, setTasks] = useState([]);
@@ -13,7 +14,7 @@ const TaskBoard = ({ projectId }) => {
     const loadTasks = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:5000/api/tasks/project/${projectId}`,
+          `${API_BASE_URL}/api/tasks/project/${projectId}`,
           {
             headers: { Authorization: `Bearer ${token}` },
           },
@@ -30,7 +31,7 @@ const TaskBoard = ({ projectId }) => {
   const fetchTasks = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:5000/api/tasks/project/${projectId}`,
+        `${API_BASE_URL}/api/tasks/project/${projectId}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         },
@@ -45,7 +46,7 @@ const TaskBoard = ({ projectId }) => {
     e.preventDefault();
     try {
       await axios.post(
-        "http://localhost:5000/api/tasks/main",
+        `${API_BASE_URL}/api/tasks/main`,
         { title: taskTitle, project: projectId },
         { headers: { Authorization: `Bearer ${token}` } },
       );
@@ -67,7 +68,7 @@ const TaskBoard = ({ projectId }) => {
 
     try {
       await axios.post(
-        "http://localhost:5000/api/tasks/subtask",
+        `${API_BASE_URL}/api/tasks/subtask`,
         {
           title: subtaskTitle,
           project: projectId,
@@ -86,7 +87,7 @@ const TaskBoard = ({ projectId }) => {
   const updateStatus = async (taskId, newStatus) => {
     try {
       await axios.put(
-        `http://localhost:5000/api/tasks/${taskId}`,
+        `${API_BASE_URL}/api/tasks/${taskId}`,
         { status: newStatus },
         { headers: { Authorization: `Bearer ${token}` } },
       );
@@ -103,7 +104,7 @@ const TaskBoard = ({ projectId }) => {
     }
 
     try {
-      await axios.delete(`http://localhost:5000/api/tasks/${taskId}`, {
+      await axios.delete(`${API_BASE_URL}/api/tasks/${taskId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       fetchTasks();

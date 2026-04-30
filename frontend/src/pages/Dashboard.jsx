@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import TaskBoard from "../components/TaskBoard";
 import axios from "axios";
 import { getUserRoleFromToken } from "../utils/auth";
+import { API_BASE_URL } from "../config/api";
 
 const Dashboard = () => {
   const [projects, setProjects] = useState([]);
@@ -14,7 +15,7 @@ const Dashboard = () => {
   useEffect(() => {
     const loadProjects = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/projects", {
+        const res = await axios.get(`${API_BASE_URL}/api/projects`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setProjects(res.data);
@@ -28,7 +29,7 @@ const Dashboard = () => {
 
   const fetchProjects = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/projects", {
+      const res = await axios.get(`${API_BASE_URL}/api/projects`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setProjects(res.data);
@@ -41,7 +42,7 @@ const Dashboard = () => {
     e.preventDefault();
     try {
       await axios.post(
-        "http://localhost:5000/api/projects",
+        `${API_BASE_URL}/api/projects`,
         { name, description },
         { headers: { Authorization: `Bearer ${token}` } },
       );
@@ -59,7 +60,7 @@ const Dashboard = () => {
       return;
 
     try {
-      await axios.delete(`http://localhost:5000/api/projects/${projectId}`, {
+      await axios.delete(`${API_BASE_URL}/api/projects/${projectId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       fetchProjects(); // Refresh the list so the deleted project disappears
