@@ -1,20 +1,15 @@
-Frontend (Vercel) automatic deploy setup
+Frontend (Vercel Git Integration only)
 
-1. Add project to Vercel and link GitHub repository.
-2. In Vercel Project Settings > Environment Variables, add:
+1. Import this GitHub repository into Vercel.
+2. Set the Vercel project Root Directory to `frontend`.
+3. In Vercel Project Settings > Environment Variables, add:
    - `VITE_API_URL` = https://<your-railway-domain>
-
-3. Add these GitHub repository secrets (Settings > Secrets):
-   - `VERCEL_TOKEN` (from your Vercel account)
-   - `VERCEL_ORG_ID` (Vercel Organization ID)
-   - `VERCEL_PROJECT_ID` (Vercel Project ID)
-   - `VITE_API_URL` (same as above)
-
-4. The provided GitHub Action will run on push to `main` and deploy the `frontend/` directory to Vercel.
+4. Deploy once from Vercel dashboard.
+5. Future pushes to `main` auto-deploy through Vercel Git Integration.
 
 Backend (Railway)
 
-- You already deployed the backend. Copy the Railway public domain (Service → Networking) and paste it into `VITE_API_URL` in Vercel or as the `VITE_API_URL` GitHub secret.
+- You already deployed the backend. Copy the Railway public domain (Service -> Networking) and paste it into `VITE_API_URL` in Vercel.
 
 Manual quick test (local frontend)
 

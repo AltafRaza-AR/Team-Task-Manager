@@ -66,12 +66,21 @@ JWT_SECRET=your_secret_key
 PORT=5000
 ```
 
-### Deployment (Railway)
+### Backend Deployment (Railway)
 
 1. Push code to GitHub
 2. Connect GitHub repo to Railway
 3. Set environment variables in Railway dashboard
 4. Railway auto-deploys on push
+
+### Frontend Deployment (Vercel Git Integration)
+
+1. Import this repository into Vercel
+2. Set Root Directory to `frontend`
+3. Add environment variable in Vercel:
+   - `VITE_API_URL=https://team-task-manager-production-1de0.up.railway.app`
+4. Deploy once from Vercel dashboard
+5. Future pushes to `main` auto-deploy via Vercel Git Integration
 
 ## Project Structure
 
