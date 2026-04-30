@@ -300,12 +300,13 @@ const Dashboard = () => {
           margin: 0;
         }
         .restricted-section {
-          background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
-          border: 1px solid #e2e8f0;
+          background: white;
+          border: 2px solid #667eea;
           border-radius: 12px;
           padding: 32px;
           text-align: center;
           margin-bottom: 40px;
+          box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
         }
         .restricted-section h2 {
           font-size: 20px;
@@ -313,9 +314,10 @@ const Dashboard = () => {
           margin: 0 0 8px 0;
         }
         .restricted-section p {
-          color: #718096;
+          color: #2d3748;
           margin: 0;
           font-size: 14px;
+          font-weight: 500;
         }
       `}</style>
 
