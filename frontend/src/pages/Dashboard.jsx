@@ -9,16 +9,23 @@ const Dashboard = () => {
   const [projects, setProjects] = useState([]);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
   const token = localStorage.getItem("token");
   const isAdmin = getUserRoleFromToken(token) === "Admin";
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    if (window.confirm("Are you sure you want to logout?")) {
-      localStorage.removeItem("token");
-      localStorage.removeItem("userRole");
-      navigate("/login");
-    }
+    setShowLogoutModal(true);
+  };
+
+  const confirmLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("userRole");
+    navigate("/login");
+  };
+
+  const cancelLogout = () => {
+    setShowLogoutModal(false);
   };
 
   // Load projects as soon as the page opens
@@ -321,6 +328,77 @@ const Dashboard = () => {
           font-size: 14px;
           font-weight: 500;
         }
+        .logout-modal {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: rgba(0, 0, 0, 0.5);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: 1000;
+          animation: fadeIn 0.3s ease;
+        }
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        .logout-modal-content {
+          background: white;
+          border-radius: 16px;
+          padding: 40px;
+          max-width: 400px;
+          text-align: center;
+          box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+          animation: slideUp 0.3s ease;
+        }
+        @keyframes slideUp {
+          from { opacity: 0; transform: translateY(20px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .logout-modal-content h3 {
+          font-size: 24px;
+          color: #1a202c;
+          margin: 0 0 12px 0;
+        }
+        .logout-modal-content p {
+          color: #718096;
+          margin: 0 0 32px 0;
+          font-size: 15px;
+          line-height: 1.5;
+        }
+        .logout-modal-buttons {
+          display: flex;
+          gap: 12px;
+          justify-content: center;
+        }
+        .logout-modal-btn {
+          padding: 12px 28px;
+          border: none;
+          border-radius: 8px;
+          font-weight: 600;
+          cursor: pointer;
+          font-size: 14px;
+          transition: all 0.3s ease;
+        }
+        .logout-modal-btn-yes {
+          background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+          color: white;
+        }
+        .logout-modal-btn-yes:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 8px 20px rgba(245, 87, 108, 0.3);
+        }
+        .logout-modal-btn-no {
+          background: #e2e8f0;
+          color: #1a202c;
+        }
+        .logout-modal-btn-no:hover {
+          background: #cbd5e0;
+          transform: translateY(-2px);
+        }
       `}</style>
 
       <div className="dashboard-header">
@@ -436,6 +514,32 @@ const Dashboard = () => {
           )}
         </div>
       </div>
+
+      {showLogoutModal && (
+        <div className="logout-modal">
+          <div className="logout-modal-content">
+            <h3>Confirm Logout</h3>
+            <p>
+              Are you sure you want to logout? You'll need to sign in again to
+              access your projects.
+            </p>
+            <div className="logout-modal-buttons">
+              <button
+                className="logout-modal-btn logout-modal-btn-yes"
+                onClick={confirmLogout}
+              >
+                Yes, Logout
+              </button>
+              <button
+                className="logout-modal-btn logout-modal-btn-no"
+                onClick={cancelLogout}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
