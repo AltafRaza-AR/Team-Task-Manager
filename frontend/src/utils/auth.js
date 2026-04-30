@@ -1,5 +1,5 @@
 export const getUserRoleFromToken = (token) => {
-  const storedRole = localStorage.getItem("userRole");
+  const storedRole = sessionStorage.getItem("userRole");
   if (storedRole) {
     return storedRole;
   }

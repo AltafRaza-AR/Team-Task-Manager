@@ -22,8 +22,8 @@ const Signup = () => {
         role,
       });
       const token = res.data.token;
-      localStorage.setItem("token", token);
-      localStorage.setItem("userRole", res.data.user.role);
+      sessionStorage.setItem("token", token);
+      sessionStorage.setItem("userRole", res.data.user.role);
       navigate("/dashboard");
     } catch (err) {
       setError(err.response?.data?.message || "Signup failed");

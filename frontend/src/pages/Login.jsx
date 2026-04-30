@@ -23,9 +23,9 @@ const Login = () => {
       // 2. Grab the token from the response
       const token = response.data.token;
 
-      // 3. Save the token to the browser's local storage so we stay logged in
-      localStorage.setItem("token", token);
-      localStorage.setItem("userRole", response.data.user.role);
+      // 3. Save the token to the browser's session storage so we stay logged in
+      sessionStorage.setItem("token", token);
+      sessionStorage.setItem("userRole", response.data.user.role);
 
       // 4. Redirect the user to the Dashboard
       navigate("/dashboard");

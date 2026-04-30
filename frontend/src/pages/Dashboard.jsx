@@ -10,7 +10,7 @@ const Dashboard = () => {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [showLogoutModal, setShowLogoutModal] = useState(false);
-  const token = localStorage.getItem("token");
+  const token = sessionStorage.getItem("token");
   const isAdmin = getUserRoleFromToken(token) === "Admin";
   const navigate = useNavigate();
 
@@ -19,8 +19,8 @@ const Dashboard = () => {
   };
 
   const confirmLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("userRole");
+    sessionStorage.removeItem("token");
+    sessionStorage.removeItem("userRole");
     navigate("/login");
   };
 
