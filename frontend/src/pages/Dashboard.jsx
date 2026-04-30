@@ -23,6 +23,10 @@ const Dashboard = () => {
     setShowLogoutModal(true);
   };
 
+  const handleProfileClick = () => {
+    navigate("/profile");
+  };
+
   const confirmLogout = () => {
     sessionStorage.removeItem("token");
     sessionStorage.removeItem("userRole");
@@ -661,7 +665,10 @@ const Dashboard = () => {
               <span className="stat-card__label">Total Projects</span>
               <strong>{projects.length}</strong>
             </div>
-            <div className="stat-card">
+            <div
+              className="stat-card stat-card--clickable"
+              onClick={handleProfileClick}
+            >
               <span className="stat-card__label">Your Role</span>
               <strong>{isAdmin ? "👑 Admin" : "👤 Member"}</strong>
             </div>

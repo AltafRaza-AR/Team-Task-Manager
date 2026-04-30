@@ -165,6 +165,23 @@ router.delete("/users/:id", authMiddleware, async (req, res) => {
   }
 });
 
+// @route   GET /api/auth/user/:id
+// @desc    Get user profile by ID (authenticated users can view their own or admin can view any)
+router.get("/user/:id", authMiddleware, async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id).select(
+      "name email role createdAt",
+    );
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    res.json(user);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error fetching user" });
+  }
+});
+
 // @route   GET /api/auth/admin-exists
 // @desc    Check if an admin user exists (public endpoint)
 router.get("/admin-exists", async (req, res) => {
