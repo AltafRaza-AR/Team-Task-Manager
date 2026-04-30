@@ -38,10 +38,13 @@ const Dashboard = () => {
         });
         setProjects(projectsRes.data);
 
-        const membersRes = await axios.get(
-          `${API_BASE_URL}/api/auth/users/count`,
-        );
-        setMembersCount(membersRes.data.count);
+        if (isAdmin) {
+          const membersRes = await axios.get(
+            `${API_BASE_URL}/api/auth/users/count`,
+            { headers: { Authorization: `Bearer ${token}` } },
+          );
+          setMembersCount(membersRes.data.count);
+        }
       } catch (err) {
         console.error("Error fetching data", err);
       }
@@ -437,10 +440,12 @@ const Dashboard = () => {
               <span className="stat-card__label">Your Role</span>
               <strong>{isAdmin ? "👑 Admin" : "👤 Member"}</strong>
             </div>
-            <div className="stat-card">
-              <span className="stat-card__label">Team Members</span>
-              <strong>{membersCount}</strong>
-            </div>
+            {isAdmin && (
+              <div className="stat-card">
+                <span className="stat-card__label">Team Members</span>
+                <strong>{membersCount}</strong>
+              </div>
+            )}
           </div>
         </div>
 

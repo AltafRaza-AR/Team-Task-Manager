@@ -3,6 +3,7 @@ const router = express.Router();
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
+const authMiddleware = require("../middleware/auth");
 
 // @route   POST /api/auth/signup
 router.post("/signup", async (req, res) => {
@@ -85,10 +86,15 @@ router.post("/login", async (req, res) => {
   }
 });
 
-// @route   GET /api/auth/users
-// @desc    Get all users count
-router.get("/users/count", async (req, res) => {
+// @route   GET /api/auth/users/count
+// @desc    Get all users count (Admin only)
+router.get("/users/count", authMiddleware, async (req, res) => {
   try {
+    if (req.user.role !== "Admin") {
+      return res
+        .status(403)
+        .json({ message: "Only Admins can view member count" });
+    }
     const usersCount = await User.countDocuments();
     res.json({ count: usersCount });
   } catch (err) {
