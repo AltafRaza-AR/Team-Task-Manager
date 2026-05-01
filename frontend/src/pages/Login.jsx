@@ -202,6 +202,24 @@ const Login = () => {
           </button>
         </form>
 
+        <div style={{ marginTop: "12px", textAlign: "right" }}>
+          <button
+            type="button"
+            onClick={() => navigate("/forgot-password")}
+            style={{
+              background: "none",
+              border: "none",
+              color: "#667eea",
+              cursor: "pointer",
+              fontSize: "14px",
+              fontWeight: "600",
+              padding: "0",
+            }}
+          >
+            Forgot password?
+          </button>
+        </div>
+
         <div
           style={{
             marginTop: "24px",

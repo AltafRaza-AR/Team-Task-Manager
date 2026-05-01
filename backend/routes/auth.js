@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const crypto = require("crypto");
 const User = require("../models/User");
 const authMiddleware = require("../middleware/auth");
 
@@ -234,6 +235,99 @@ router.put("/change-password", authMiddleware, async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Server error changing password" });
+  }
+});
+
+// @route   POST /api/auth/forgot-password
+// @desc    Create a password reset token for a user
+router.post("/forgot-password", async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({ message: "Email is required" });
+    }
+
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(200).json({
+        message:
+          "If an account exists for that email, a reset token has been generated.",
+      });
+    }
+
+    const resetToken = crypto.randomBytes(32).toString("hex");
+    const resetTokenHash = crypto
+      .createHash("sha256")
+      .update(resetToken)
+      .digest("hex");
+
+    user.passwordResetToken = resetTokenHash;
+    user.passwordResetExpires = Date.now() + 1000 * 60 * 30;
+    await user.save();
+
+    const response = {
+      message:
+        "If an account exists for that email, a reset token has been generated.",
+    };
+
+    if (process.env.NODE_ENV !== "production") {
+      response.resetToken = resetToken;
+    }
+
+    res.json(response);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error creating reset token" });
+  }
+});
+
+// @route   POST /api/auth/reset-password
+// @desc    Reset a password using a valid reset token
+router.post("/reset-password", async (req, res) => {
+  try {
+    const { email, token, newPassword } = req.body;
+
+    if (!email || !token || !newPassword) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+
+    if (newPassword.length < 6) {
+      return res
+        .status(400)
+        .json({ message: "New password must be at least 6 characters" });
+    }
+
+    const user = await User.findOne({ email });
+    if (!user || !user.passwordResetToken || !user.passwordResetExpires) {
+      return res
+        .status(400)
+        .json({ message: "Invalid or expired reset token" });
+    }
+
+    if (user.passwordResetExpires < Date.now()) {
+      return res
+        .status(400)
+        .json({ message: "Invalid or expired reset token" });
+    }
+
+    const tokenHash = crypto.createHash("sha256").update(token).digest("hex");
+    if (tokenHash !== user.passwordResetToken) {
+      return res
+        .status(400)
+        .json({ message: "Invalid or expired reset token" });
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    user.password = await bcrypt.hash(newPassword, salt);
+    user.passwordResetToken = undefined;
+    user.passwordResetExpires = undefined;
+    await user.save();
+
+    res.json({ message: "Password reset successfully" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error resetting password" });
   }
 });
 

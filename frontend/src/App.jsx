@@ -3,6 +3,7 @@ import Login from "./pages/Login"; // <--- Import your new page
 import Signup from "./pages/Signup";
 import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile";
+import ForgotPassword from "./pages/ForgotPassword";
 
 function App() {
   return (
@@ -11,6 +12,7 @@ function App() {
         {/* Make Login the default page */}
         <Route path="/" element={<Navigate to="/login" />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/signup" element={<Signup />} />
 
         {/* We will build this next! */}
