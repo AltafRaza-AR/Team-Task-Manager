@@ -226,4 +226,4 @@ After the first signup, an admin account is created. All subsequent signups will
 - **Subsequent signups create Members** - Only members can be created after admin exists
 
 
-MIT
+
