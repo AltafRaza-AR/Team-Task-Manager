@@ -112,6 +112,11 @@ const TaskBoard = ({ projectId }) => {
         headers: { Authorization: `Bearer ${token}` },
       });
       fetchTasks();
+      alert(
+        hasSubtasks
+          ? "Task and its subtasks deleted successfully"
+          : "Task deleted successfully",
+      );
     } catch (err) {
       console.error("Error deleting task", err);
       alert("Only admins can delete tasks");
