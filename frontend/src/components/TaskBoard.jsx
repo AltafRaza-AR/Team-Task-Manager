@@ -98,8 +98,12 @@ const TaskBoard = ({ projectId }) => {
     }
   };
 
-  const deleteTask = async (taskId) => {
-    if (!window.confirm("Delete this task?")) {
+  const deleteTask = async (taskId, hasSubtasks = false) => {
+    const confirmationMessage = hasSubtasks
+      ? "Delete this task and all of its subtasks?"
+      : "Delete this task?";
+
+    if (!window.confirm(confirmationMessage)) {
       return;
     }
 
@@ -181,7 +185,9 @@ const TaskBoard = ({ projectId }) => {
                       <button
                         type="button"
                         className="btn btn--danger btn--compact"
-                        onClick={() => deleteTask(mainTask._id)}
+                        onClick={() =>
+                          deleteTask(mainTask._id, subtasks.length > 0)
+                        }
                       >
                         Delete
                       </button>
@@ -232,7 +238,7 @@ const TaskBoard = ({ projectId }) => {
                               <button
                                 type="button"
                                 className="btn btn--danger btn--compact"
-                                onClick={() => deleteTask(subtask._id)}
+                                onClick={() => deleteTask(subtask._id, false)}
                               >
                                 Delete
                               </button>
