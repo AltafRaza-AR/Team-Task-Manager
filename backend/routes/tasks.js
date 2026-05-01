@@ -109,9 +109,30 @@ router.delete("/:id", authMiddleware, async (req, res) => {
       return res.status(403).json({ message: "Only Admins can delete tasks" });
     }
 
-    const deletedTask = await Task.findByIdAndDelete(req.params.id);
-    if (!deletedTask)
+    const rootTask = await Task.findById(req.params.id);
+    if (!rootTask) {
       return res.status(404).json({ message: "Task not found" });
+    }
+
+    // Delete the selected task and all descendant subtasks so no orphan tasks remain.
+    const idsToDelete = [rootTask._id];
+    let currentLevelIds = [rootTask._id];
+
+    while (currentLevelIds.length > 0) {
+      const childTasks = await Task.find({
+        parentTask: { $in: currentLevelIds },
+      }).select("_id");
+      const childIds = childTasks.map((task) => task._id);
+
+      if (childIds.length === 0) {
+        break;
+      }
+
+      idsToDelete.push(...childIds);
+      currentLevelIds = childIds;
+    }
+
+    await Task.deleteMany({ _id: { $in: idsToDelete } });
 
     res.json({ message: "Task deleted successfully" });
   } catch (err) {

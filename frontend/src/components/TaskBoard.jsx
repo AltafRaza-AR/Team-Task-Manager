@@ -7,7 +7,7 @@ const TaskBoard = ({ projectId }) => {
   const [tasks, setTasks] = useState([]);
   const [taskTitle, setTaskTitle] = useState("");
   const [subtaskTitles, setSubtaskTitles] = useState({});
-  const token = localStorage.getItem("token");
+  const token = sessionStorage.getItem("token");
   const isAdmin = getUserRoleFromToken(token) === "Admin";
 
   useEffect(() => {
